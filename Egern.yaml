@@ -1,0 +1,114 @@
+---
+proxies:
+  - shadowsocks:
+      name: US
+      method: ChaCha20-Poly1305
+      password: 6f53a1c8-e551-4b6d-98ef-9af2b3c0e05e
+      server: jncm.sesexiaozhan.top
+      port: 20032
+      tfo: false
+      udp_relay: true
+  
+  - shadowsocks:
+      name: JP
+      method: ChaCha20-Poly1305
+      password: 6f53a1c8-e551-4b6d-98ef-9af2b3c0e05e
+      server: jncm.sesexiaozhan.top
+      port: 20032
+      tfo: false
+      udp_relay: true
+policy_groups:
+  - select:
+      name: 🚀 节点选择
+      policies:
+        - ♻️ 自动选择
+        - US
+        - JP
+  - auto_test:
+      name: ♻️ 自动选择
+      policies:
+        - US
+        - JP
+  - select:
+      name: 🌍 国外媒体
+      policies:
+        - 🚀 节点选择
+        - ♻️ 自动选择
+  - select:
+      name: 📲 电报信息
+      policies:
+        - 🚀 节点选择
+        - ♻️ 自动选择
+  - select:
+      name: Ⓜ️ 微软服务
+      policies:
+        - 🎯 国内直连
+        - 🚀 节点选择
+  - select:
+      name: 🍎 苹果服务
+      policies:
+        - 🎯 国内直连
+        - 🚀 节点选择
+  - select:
+      name: 📢 谷歌服务
+      policies:
+        - US
+        - 🚀 节点选择
+  - select:
+      name: 🎯 国内直连
+      policies:
+        - DIRECT
+  - select:
+      name: 🛑 应用净化
+      policies:
+        - REJECT
+  - select:
+      name: 🐟 漏网之鱼
+      policies:
+        - 🚀 节点选择
+rules:
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Advertising/Advertising.list"
+      policy: 🛑 应用净化
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/AdvertisingLite/AdvertisingLite.list"
+      policy: 🛑 应用净化
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/WeChat/WeChat.list"
+      policy: 🎯 国内直连
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Apple/Apple.list"
+      policy: 🍎 苹果服务
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/ChinaASN/ChinaASN.list"
+      policy: 🎯 国内直连
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/TikTok/TikTok.list"
+      policy: 🌍 国外媒体
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Google/Google.list"
+      policy: 📢 谷歌服务
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/GoogleVoice/GoogleVoice.list"
+      policy: 📢 谷歌服务
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Microsoft/Microsoft.list"
+      policy: Ⓜ️ 微软服务
+  - rule_set:
+      match: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Surge/Telegram/Telegram.list"
+      policy: 📲 电报信息
+  - ip_cidr:
+      match: 192.168.0.0/16
+      policy: 🎯 国内直连
+  - geoip:
+      match: CN
+      policy: 🎯 国内直连
+  - default:
+      policy: 🐟 漏网之鱼
+mitm:
+  enabled: true
+  ca_p12: egern.p12
+  ca_passphrase: egern
+modules:
+  - url: "https://raw.githubusercontent.com/Script-Hub-Org/Script-Hub/main/modules/script-hub.surge.sgmodule"
+    enabled: true
