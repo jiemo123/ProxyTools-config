@@ -13,6 +13,12 @@ proxies:
         uri: wss://test.bing.com/b6274123
         skip_tls_verify: false
 policy_groups:
+- external:
+    name: 机场名称
+    type: select
+    urls:
+    - https://sub.xxx.net/?token=xxx
+    hidden: false
 - select:
     name: Proxy
     policies:
@@ -68,9 +74,6 @@ mitm:
   ca_p12: egern.p12
   ca_passphrase: egern
 modules:
-- name: YoutubeAds
-  url: https://raw.githubusercontent.com/Maasea/sgmodule/master/YoutubeAds.sgmodule
-  enabled: true
 - name: BoxJs
   url: https://raw.githubusercontent.com/chavyleung/scripts/master/box/rewrite/boxjs.rewrite.surge.sgmodule
   enabled: true
@@ -79,4 +82,7 @@ modules:
   enabled: true
 - name: Sub-Store
   url:  https://raw.githubusercontent.com/Peng-YM/Sub-Store/master/config/Surge.sgmodule
+  enabled: true
+- name: YoutubeAds
+  url: https://raw.githubusercontent.com/Maasea/sgmodule/master/YoutubeAds.sgmodule
   enabled: true
