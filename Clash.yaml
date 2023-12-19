@@ -1,0 +1,169 @@
+port: 7890
+socks-port: 7891
+allow-lan: true
+mode: Rule
+log-level: info
+external-controller: 127.0.0.1:9090
+
+# 自建节点
+proxies:
+  - name: "vmess"
+    type: vmess
+    server:xxx.xxx.xxx  
+    port: 443
+    uuid: b6274123-1037-49bc-d1e0-xxxx
+    alterId: 0
+    cipher: auto
+    tls: true
+    network: ws
+    ws-opts: 
+      path: /xxx
+      headers:
+        Host: xxx.xxx.xxx
+  
+  - { name: 'xxx', type: ss, server: xxx, port: xxx, cipher: chacha20-ietf-poly1305, password: xxx, udp: true }
+
+# # 机场订阅
+# proxy-providers:
+    # 自定义名称
+#   test:
+      # 远程填写http,本地填写file
+#     type: http
+      # 机场订阅地址/本地文件地址
+#     url: "xxxxxxx"
+      # 更新时间
+#     interval: 3600
+      # 过滤筛选
+#     filter: '日本'
+      # 存储到本地文件路径
+#     path: ./surfcloud.yaml
+      # 延迟测试
+#     health-check:
+#       enable: true
+#       interval: 600
+#       url: http://www.gstatic.com/generate_204
+
+# 策略组
+proxy-groups:
+  - name: PROXY
+    type: select
+    # use:
+    #   - test
+    proxies:
+      - vmess
+
+  - name: OpenAi
+    type: select
+    proxies:
+      - xxx
+  
+
+rule-providers:
+  # 规则修正
+  Direct:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Direct/Direct.yaml"
+    interval: 3600
+    path: ./Direct.yaml
+
+  # 局域网
+  LAN:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/LocalAreaNetwork.yaml"
+    interval: 3600
+    path: ./LocalAreaNetwork.yaml
+
+  # 苹果服务
+  Apple:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple.yaml"
+    interval: 3600
+    path: ./Apple.yaml
+  Apple_Domain:
+    behavior: "domain"
+    type: http
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Apple/Apple_Domain.yaml"
+    interval: 3600
+    path: ./Apple_Domain.yaml
+
+  # 微软服务
+  Microsoft:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Microsoft/Microsoft.yaml"
+    interval: 3600
+    path: ./Microsoft.yaml
+  
+  # 谷歌服务
+  Google:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.yaml"
+    interval: 3600
+    path: ./Google.yaml
+  YouTube:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/YouTube/YouTube.yaml"
+    interval: 3600
+    path: ./YouTube.yaml
+
+  # 电报消息
+  Telegram:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/Ruleset/Telegram.yaml"
+    interval: 3600
+    path: ./Telegram.yaml
+
+  # OpenAi
+  OpenAi:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/Ruleset/OpenAi.yaml"
+    interval: 3600
+    path: ./OpenAi.yaml
+
+  # 中国大陆
+  ChinaDomain:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ChinaDomain.yaml"
+    interval: 3600
+    path: ./ChinaDomain.yaml
+
+  # 国际媒体
+  ProxyMedia:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyMedia.yaml"
+    interval: 3600
+    path: ./ProxyMedia.yaml
+
+  # 代理网站
+  ProxyGFWlist:
+    behavior: "classical"
+    type: http
+    url: "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Providers/ProxyGFWlist.yaml"
+    interval: 3600
+    path: ./ProxyGFWlist.yaml
+
+# 分流规则
+rules:
+  - RULE-SET,Direct,DIRECT
+  - RULE-SET,LAN,DIRECT
+  - RULE-SET,Apple,DIRECT
+  - RULE-SET,Apple_Domain,DIRECT
+  - RULE-SET,Microsoft,DIRECT
+  - RULE-SET,Google,PROXY
+  - RULE-SET,YouTube,PROXY
+  - RULE-SET,Telegram,PROXY
+  - RULE-SET,OpenAi,OpenAi
+  - RULE-SET,ProxyMedia,PROXY
+  - RULE-SET,ProxyGFWlist,PROXY
+  - RULE-SET,ChinaDomain,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,PROXY
